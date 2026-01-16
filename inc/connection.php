@@ -5,7 +5,7 @@ function dbconnect()
         $host = 'localhost';
         $dbname = 'projet_reseau';
         $user = 'root';
-        $pass = '';
+        $pass = 'root';
         $DBH = new PDO("mysql:host=$host;dbname=$dbname", $user, $pass);
 
         return $DBH;

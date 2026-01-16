@@ -1,0 +1,69 @@
+🔎 Étape 1 — Vérifier le nom du hotspot
+nmcli connection show
+
+
+Repère le nom, par exemple :
+
+Hotspot
+
+
+👉 On va l’utiliser tel quel.
+
+📝 Étape 2 — Créer le script de reconnexion
+sudo nano /usr/local/bin/hotspot-reconnect.sh
+
+Contenu du script
+#!/bin/bash
+
+HOTSPOT_NAME="Hotspot"
+
+STATUS=$(nmcli -t -f NAME,DEVICE connection show --active | grep "$HOTSPOT_NAME")
+
+if [ -z "$STATUS" ]; then
+    nmcli connection up "$HOTSPOT_NAME"
+fi
+
+🔐 Étape 3 — Rendre le script exécutable
+sudo chmod +x /usr/local/bin/hotspot-reconnect.sh
+
+
+Test manuel :
+
+sudo /usr/local/bin/hotspot-reconnect.sh
+
+
+👉 Si le hotspot se relance → parfait.
+
+⚙️ Étape 4 — Automatiser avec systemd
+sudo nano /etc/systemd/system/hotspot-reconnect.service
+
+Contenu du service
+[Unit]
+Description=Auto reconnect WiFi Hotspot
+After=network.target NetworkManager.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/hotspot-reconnect.sh
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+
+🚀 Étape 5 — Activer le service
+sudo systemctl daemon-reexec
+sudo systemctl daemon-reload
+sudo systemctl enable hotspot-reconnect.service
+sudo systemctl start hotspot-reconnect.service
+
+✅ Vérification
+systemctl status hotspot-reconnect.service
+
+
+Tu dois voir :
+
+active (running)
+
+
+🔥 Le hotspot se relancera tout seul, même s’il s’éteint.
