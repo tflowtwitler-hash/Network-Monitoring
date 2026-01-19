@@ -63,7 +63,7 @@
         }
 
         $escapedIP = escapeshellarg($ip);
-        $command = "sudo iptables -L INPUT -n | grep $escapedIP";
+        $command = "sudo iptables -L FORWARD -n | grep $escapedIP";
 
         exec($command, $output, $returnCode);
 
@@ -107,7 +107,7 @@
         $escapedIP = escapeshellarg($ip);
 
         // Execute iptables command with sudo
-        $command = "sudo /sbin/iptables -A INPUT -s $escapedIP -j DROP 2>&1";
+        $command = "sudo /sbin/iptables -A FORWARD -s $escapedIP -j DROP 2>&1";
 
         exec($command, $output, $returnCode);
 
@@ -160,7 +160,7 @@
         $escapedIP = escapeshellarg($ip);
 
         // Execute iptables command to remove the rule
-        $command = "sudo /sbin/iptables -D INPUT -s $escapedIP -j DROP 2>&1";
+        $command = "sudo /sbin/iptables -D FORWARD -s $escapedIP -j DROP 2>&1";
 
         exec($command, $output, $returnCode);
 
@@ -192,7 +192,7 @@
      */
     function getBlockedIPs()
     {
-        $command = "sudo /sbin/iptables -L INPUT -n --line-numbers 2>&1";
+        $command = "sudo /sbin/iptables -L FORWARD -n --line-numbers 2>&1";
 
         exec($command, $output, $returnCode);
 
@@ -257,7 +257,7 @@
      */
     function flushAllBlockedIPs()
     {
-        $command = "sudo /sbin/iptables -F INPUT 2>&1";
+        $command = "sudo /sbin/iptables -F FORWARD 2>&1";
 
         exec($command, $output, $returnCode);
 
@@ -273,7 +273,7 @@
 
     /**
      * Save current iptables rules to persist across reboots
-     * 
+     *
      * @return array Result with success status
      */
     function saveIPTablesRules()
@@ -298,7 +298,7 @@
      */
     function getFirewallStats()
     {
-        $command = "sudo /sbin/iptables -L INPUT -n -v 2>&1";
+        $command = "sudo /sbin/iptables -L FORWARD -n -v 2>&1";
 
         exec($command, $output, $returnCode);
 
